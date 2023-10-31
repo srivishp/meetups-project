@@ -3,11 +3,12 @@ import Card from "../ui/Card";
 import classes from "./MeetupItem.module.css";
 
 function MeetupItem(props) {
-  // React hooks must always be used at the root level of a component
+  // The useRouter hook allows you to programmatically change routes inside components.
+  // It is a React hook and must always be used at the root level of a component
   const router = useRouter();
 
   function showDetailsHandler() {
-    // todo: Programmatic Navigation
+    // todo: Programmatic Navigation with useRouter
     // * push() method pushes a new page onto a stack of pages
     // Getting the id via props from meetup list
     router.push("/" + props.id);
