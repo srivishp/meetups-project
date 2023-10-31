@@ -46,4 +46,31 @@ export async function getStaticProps() {
   };
 }
 
+////////////////////////////////////////////////////////////////////////
+
+// // * Server Side Rendering (SSR)
+// // ! ONLY USE IF YOUR PAGE MAKES MULTIPLE REQUESTS PER SECOND
+// // getServerSideProps works only in 'pages' components
+// // It will run on the server. Useful for updating/fetching data everytime a request is sent.
+
+// // ! This code will always execute on the server.
+// // Can perform operations using credentials which cannot be exposed to the user
+
+// export async function getServerSideProps(context) {
+//   // context parameter provides us the info about request and response objects
+//   // like request headers, body etc...
+//   const req = context.req;
+//   const res = context.res;
+//   // todo: Can write any code here (connecting to DB, accessing file systems).
+//   // must ALWAYS return an object
+//   return {
+//     props: {
+//       meetups: DUMMY_MEETUPS,
+//     },
+
+//     // * Cannot set revalidate as it runs after every incoming request.
+//     // revalidate doesn't make sense here
+//   };
+// }
+
 export default HomePage;
