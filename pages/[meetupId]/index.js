@@ -1,12 +1,13 @@
+import { MongoClient, ObjectId } from "mongodb";
 import MeetupDetail from "@/components/meetups/MeetupDetail";
 
-function MeetupDetails() {
+function MeetupDetails(props) {
   return (
     <MeetupDetail
-      image="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/800px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg"
-      title="A First Meetup"
-      address="Eiffel Tower, Paris"
-      description="Meetup Description"
+      image={props.meetupData.image}
+      title={props.meetupData.title}
+      address={props.meetupData.address}
+      description={props.meetupData.description}
     />
   );
 }
@@ -18,6 +19,17 @@ function MeetupDetails() {
 // https://nextjs.org/docs/pages/building-your-application/data-fetching/get-static-paths#when-should-i-use-getstaticpaths
 
 export async function getStaticPaths() {
+  const client = await MongoClient.connect(
+    "mongodb+srv://srivishp:Mongo123@cluster0.ttaoxto.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
+
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups-collection");
+
+  const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+
+  client.close();
+
   return {
     // fallback is used to indicate if all supported meetupId values are listed (true)
     // or not (false)
@@ -25,18 +37,9 @@ export async function getStaticPaths() {
     // todo: If set to true, then new meetupIds will be dynamically created and added to the list
     fallback: false,
     // paths key must contain one object per version of the dynamic page
-    paths: [
-      {
-        params: {
-          meetupId: "m1",
-        },
-      },
-      {
-        params: {
-          meetupId: "m2",
-        },
-      },
-    ],
+    paths: meetups.map((meetup) => ({
+      params: { meetupId: meetup._id.toString() },
+    })),
   };
 }
 
@@ -46,15 +49,27 @@ export async function getStaticProps(context) {
   // * as it is running during build time
   console.log(meetupId);
 
+  const client = await MongoClient.connect(
+    "mongodb+srv://srivishp:Mongo123@cluster0.ttaoxto.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
+
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups-collection");
+
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: new ObjectId(meetupId),
+  });
+
+  client.close();
+
   return {
     props: {
       meetupData: {
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/800px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
-        id: "m1",
-        title: "A First Meetup",
-        address: "Eiffel Tower, Paris",
-        description: "Meetup Description",
+        id: selectedMeetup._id.toString(),
+        title: selectedMeetup.data.title,
+        address: selectedMeetup.data.address,
+        image: selectedMeetup.data.image,
+        description: selectedMeetup.data.description,
       },
     },
   };
