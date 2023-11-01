@@ -44,8 +44,9 @@ export async function getStaticPaths() {
     // fallback is used to indicate if all supported meetupId values are listed (true)
     // or not (false)
     // todo: So, if user enters a path that is not supported, they would see a 404 error
-    // todo: If set to true, then new meetupIds will be dynamically created and added to the list
-    fallback: false,
+    // todo: If set to true or blocking, then new meetupIds will be dynamically created and added to the list
+    // true will show empty page but blocking will not show anything until the page is pre-rendered
+    fallback: "blocking",
     // paths key must contain one object per version of the dynamic page
     paths: meetups.map((meetup) => ({
       params: { meetupId: meetup._id.toString() },
