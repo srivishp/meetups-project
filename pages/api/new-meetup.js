@@ -8,13 +8,36 @@
 // The URL(API Route) for this file will be /api/new-meetup
 // Any request sent to this URL will trigger the function defined in here
 
-function handler(req, res) {
+import { MongoClient } from "mongodb";
+
+async function handler(req, res) {
   // Ensuring that only POST request will trigger this function
   if (req.method === "POST") {
     const data = req.body;
     console.log(data);
-    // object destructuring
-    const { title, image, address, description } = data;
+
+    // ! Never run such code on the client side as it would expose our username and password
+    // But it is okay here, because this is server side code
+
+    // returns a promise, so we can use async/await
+    const client = await MongoClient.connect(
+      "mongodb+srv://srivishp:Mongo123@cluster0.ttaoxto.mongodb.net/meetups?retryWrites=true&w=majority"
+    );
+
+    const db = client.db();
+
+    // MongoDB is not a Document based DB, so it uses Collections instead of Tables
+    const meetupsCollection = db.collection("meetups-collection");
+
+    // In MongoDB, a document is just a JavaScript Object
+    const result = await meetupsCollection.insertOne({ data });
+
+    console.log(result);
+
+    // closes the connection with database
+    client.close();
+
+    res.status(201).json({ message: "Meetup Inserted" });
   }
 }
 
