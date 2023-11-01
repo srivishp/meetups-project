@@ -1,24 +1,29 @@
+// * A Smart Next JS feature:
+// If an import is used only in server side code (methods like getStaticProps etc...) in nextjs apps, it is only included in the server side bundle and not the client side bundle and vice versa
+// This is helpful as it reduces bundle sizes and improves the security in case of server side imports
+import { MongoClient } from "mongodb";
+
 import MeetupList from "@/components/meetups/MeetupList";
 
-const DUMMY_MEETUPS = [
-  {
-    id: "m1",
-    title: "A First Meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/800px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
-    address: "Some address, some city etc etc...",
-    description: "This is the first meetup!",
-  },
+// const DUMMY_MEETUPS = [
+//   {
+//     id: "m1",
+//     title: "A First Meetup",
+//     image:
+//       "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/800px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
+//     address: "Some address, some city etc etc...",
+//     description: "This is the first meetup!",
+//   },
 
-  {
-    id: "m2",
-    title: "A Second Meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Lady_Liberty_under_a_blue_sky_%28cropped%29.jpg/800px-Lady_Liberty_under_a_blue_sky_%28cropped%29.jpg",
-    address: "Some address, some city etc etc...",
-    description: "This is the second meetup!",
-  },
-];
+//   {
+//     id: "m2",
+//     title: "A Second Meetup",
+//     image:
+//       "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Lady_Liberty_under_a_blue_sky_%28cropped%29.jpg/800px-Lady_Liberty_under_a_blue_sky_%28cropped%29.jpg",
+//     address: "Some address, some city etc etc...",
+//     description: "This is the second meetup!",
+//   },
+// ];
 
 function HomePage(props) {
   return <MeetupList meetups={props.meetups} />;
@@ -33,16 +38,33 @@ function HomePage(props) {
 
 export async function getStaticProps() {
   // todo: Can write any code here (connecting to DB, accessing file systems).
+
+  const client = await MongoClient.connect(
+    "mongodb+srv://srivishp:Mongo123@cluster0.ttaoxto.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
+
+  const db = client.db();
+  const meetupsCollection = db.collection("meetups-collection");
+  // find() will find all documents by default in a collection
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  client.close();
   // must ALWAYS return an object
   return {
     props: {
-      meetups: DUMMY_MEETUPS,
+      meetups: meetups.map((meetup) => ({
+        id: meetup._id.toString(),
+        title: meetup.data.title,
+        address: meetup.data.address,
+        image: meetup.data.image,
+      })),
     },
 
     // * Incremental static generation with 'revalidate'
     // Waits a given number of seconds before pre rendering page again
     // Users will not see outdated content this way
-    revalidate: 10,
+    revalidate: 1,
   };
 }
 
