@@ -2,7 +2,7 @@
 // If an import is used only in server side code (methods like getStaticProps etc...) in nextjs apps, it is only included in the server side bundle and not the client side bundle and vice versa
 // This is helpful as it reduces bundle sizes and improves the security in case of server side imports
 import { MongoClient } from "mongodb";
-
+import Head from "next/head";
 import MeetupList from "@/components/meetups/MeetupList";
 
 // const DUMMY_MEETUPS = [
@@ -26,7 +26,18 @@ import MeetupList from "@/components/meetups/MeetupList";
 // ];
 
 function HomePage(props) {
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <>
+      <Head>
+        <title>React Meetups</title>
+        <meta
+          name="Meetups Project"
+          content="Browse a huge list of React Meetups"
+        />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </>
+  );
 }
 
 // * Static Site Generation (SSG)
