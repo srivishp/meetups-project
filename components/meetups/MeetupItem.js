@@ -8,8 +8,9 @@ function MeetupItem(props) {
   const router = useRouter();
 
   function showDetailsHandler() {
-    // todo: Programmatic Navigation with useRouter
-    // * push() method pushes a new page onto a stack of pages
+    //-> Programmatic Navigation with useRouter
+    // ? push() method pushes a new page onto a stack of pages
+
     // Getting the id via props from meetup list
     router.push("/" + props.id);
   }

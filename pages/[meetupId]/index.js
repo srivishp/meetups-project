@@ -22,11 +22,15 @@ function MeetupDetails(props) {
   );
 }
 
-// * If a page has Dynamic Routes, ie pages with [someId].js, and uses getStaticProps, it needs to define a list of paths to be statically generated.
-// It has to pre-render all possible pages for the dynamic route IDs. For that we use getStaticPaths
-// todo: When you export getStaticPaths (alongside Static Site Generation) from a page that uses dynamic routes,
-// todo: Next.js will statically pre-render all the paths specified by getStaticPaths.
-// https://nextjs.org/docs/pages/building-your-application/data-fetching/get-static-paths#when-should-i-use-getstaticpaths
+/*
+
+ ? If a page has Dynamic Routes, ie pages with [someId].js, and uses getStaticProps, it needs to define a list of paths to be statically generated.
+ It has to pre-render all possible pages for the dynamic route IDs. For that we use getStaticPaths
+ # When you export getStaticPaths (alongside Static Site Generation) from a page that uses dynamic routes,
+ # Next.js will statically pre-render all the paths specified by getStaticPaths.
+ https://nextjs.org/docs/pages/building-your-application/data-fetching/get-static-paths#when-should-i-use-getstaticpaths
+
+ */
 
 export async function getStaticPaths() {
   const client = await MongoClient.connect(
@@ -41,10 +45,9 @@ export async function getStaticPaths() {
   client.close();
 
   return {
-    // fallback is used to indicate if all supported meetupId values are listed (true)
-    // or not (false)
-    // todo: So, if user enters a path that is not supported, they would see a 404 error
-    // todo: If set to true or blocking, then new meetupIds will be dynamically created and added to the list
+    // * fallback is used to indicate if all supported meetupId values are listed (true) or not (false)
+    // ? So, if user enters a path that is not supported, they would see a 404 error
+    // # If set to true or blocking, then new meetupIds will be dynamically created and added to the list
     // true will show empty page but blocking will not show anything until the page is pre-rendered
     fallback: "blocking",
     // paths key must contain one object per version of the dynamic page

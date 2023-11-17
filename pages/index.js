@@ -1,4 +1,4 @@
-// * A Smart Next JS feature:
+// ? A Smart Next JS feature:
 // If an import is used only in server side code (methods like getStaticProps etc...) in nextjs apps, it is only included in the server side bundle and not the client side bundle and vice versa
 // This is helpful as it reduces bundle sizes and improves the security in case of server side imports
 import { MongoClient } from "mongodb";
@@ -40,7 +40,7 @@ function HomePage(props) {
   );
 }
 
-// * Static Site Generation (SSG)
+// -> Static Site Generation (SSG)
 // getStaticProps works only in 'pages' components
 // It will pre-render the content using props, which helps in SEO
 // Loads data before component is executed, so that it will get rendered with the required data
@@ -48,7 +48,7 @@ function HomePage(props) {
 // ! This code will not execute on either server or client. It will get executed during build process.
 
 export async function getStaticProps() {
-  // todo: Can write any code here (connecting to DB, accessing file systems).
+  //  Can write any code here (connecting to DB, accessing file systems).
 
   const client = await MongoClient.connect(
     "mongodb+srv://srivishp:Mongo123@cluster0.ttaoxto.mongodb.net/meetups?retryWrites=true&w=majority"
@@ -94,7 +94,7 @@ export async function getStaticProps() {
 //   // like request headers, body etc...
 //   const req = context.req;
 //   const res = context.res;
-//   // todo: Can write any code here (connecting to DB, accessing file systems).
+//   // # Can write any code here (connecting to DB, accessing file systems).
 //   // must ALWAYS return an object
 //   return {
 //     props: {
